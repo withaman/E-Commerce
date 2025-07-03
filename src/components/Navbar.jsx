@@ -1,7 +1,8 @@
 import { NavLink, Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 import React, { useState } from "react";
-function Navbar() {
+
+const Navbar = () => {
   const [visible, setVisible] = useState(false);
   return (
     <div className="flex items-center py-5 justify-between font-medium">
