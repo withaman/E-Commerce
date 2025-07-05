@@ -1,12 +1,14 @@
-import React from 'react'
-import Hero from '../components/hero'
+import React from "react";
+import Hero from "../components/hero";
+import LatestCollection from "../components/LatestCollection";
 
 function Home() {
   return (
     <div>
-        <Hero />
+      <Hero />
+      <LatestCollection />
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
