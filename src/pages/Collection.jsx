@@ -4,17 +4,15 @@ import ProductItems from "../components/ProductItems";
 
 const Collection = () => {
   const { products } = useContext(ShopContext);
-  const [filterProducts, setFilterProducts] = useState(products);
-  const [showFilter, setShowFilter] = useState(false);
+  const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
-  const [search, setSearch] = useState("");
-  const [sortType, setSortType] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortType, setSortType] = useState("relevant");
 
   //Toggle Category Selection
   const toggleCategory = (e) => {
     const value = e.target.value;
-    console.log(value);
     setCategory((prev) =>
       prev.includes(value)
         ? prev.filter((item) => item !== value)
@@ -25,52 +23,54 @@ const Collection = () => {
   const toggleSubCategory = (e) => {
     const value = e.target.value;
     setSubCategory((prev) =>
-      pre.includes(value)
+      prev.includes(value)
         ? prev.filter((item) => item !== value)
         : [...prev, value]
     );
   };
 
-  // Handle seacrch input change
-  const handleSeacrch = (e) => {
+  // Handle search input change
+  const handleSearch = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
   //Apply Filter and Sorting
   useEffect(() => {
-    let updatedProducts = products;
+    if (!products) return;
+
+    let updatedProducts = [...products];
 
     //Apply Category Filter
-    if (category.lenght > 0) {
+    if (category.length > 0) {
       updatedProducts = updatedProducts.filter((product) =>
-        category.include(products.category)
+        category.includes(product.category)
       );
     }
 
     //Apply Sub Category Filter
-    if (subCategory.lenght > 0) {
+    if (subCategory.length > 0) {
       updatedProducts = updatedProducts.filter((product) =>
-        subCategory.include(products.subCategory)
+        subCategory.includes(product.subCategory)
       );
     }
 
-    //Apply Search Filter
+    //Apply Search
     if (searchQuery) {
       updatedProducts = updatedProducts.filter((product) =>
         product.name.toLowerCase().includes(searchQuery)
       );
     }
 
-    //Apply Sorting
-    if (sortType === 'low-high'){
-      updatedProducts = updatedProducts.sort((a,b)=> a.price - b.price)
-    }else if (sortType === 'high-low'){
-      updatedProducts = updatedProducts.sort((a,b) => b.price - a.price)
+    // Apply Sorting
+    if (sortType === "low-high") {
+      updatedProducts.sort((a, b) => a.price - b.price);
+    } else if (sortType === "high-low") {
+      updatedProducts.sort((a, b) => b.price - a.price);
     }
-    console.log(updatedProducts)
+
     setFilterProducts(updatedProducts);
-    console.log(category);
-  }, [products, category, searchQuery,sortType,subCategory]);
+  }, [products, category, searchQuery, sortType, subCategory]);
+
   return (
     <div className="flex mt-5">
       <div className="l-side flex flex-col gap-7 w-60 px-3 py-2">
@@ -80,16 +80,28 @@ const Collection = () => {
           <input
             type="checkbox"
             onChange={toggleCategory}
-            name="mens"
-            id="mens"
-            value="men"
+            name="Men"
+            id="Men"
+            value="Men"
           />
           <label> Mens</label>
           <br />
-          <input type="checkbox" name="women" id="women" />
+          <input
+            type="checkbox"
+            onChange={toggleCategory}
+            name="Women"
+            id="Women"
+            value="Women"
+          />
           <label> Women</label>
           <br />
-          <input type="checkbox" name="kids" id="Wokids" />
+          <input
+            type="checkbox"
+            onChange={toggleCategory}
+            name="Kids"
+            id="Kids"
+            value="Kids"
+          />
           <label> Kids</label>
         </div>
         <div className="border p-4 gap-2">
@@ -98,20 +110,38 @@ const Collection = () => {
             type="text"
             placeholder="Search products..."
             className="border p-1"
+            onChange={handleSearch}
           />
         </div>
         <div className="border p-4 gap-2">
-          <h3 className="font-bold mb-2">CATEGORIES</h3>
-          <input type="checkbox" name="mens" id="mens" />
+          <h3 className="font-bold mb-2">SUBCATEGORIES</h3>
+          <input
+            type="checkbox"
+            onChange={toggleSubCategory}
+            name="Topwear"
+            id="Topwear"
+            value="Topwear"
+          />
           <label> Topwear</label>
           <br />
-          <input type="checkbox" name="women" id="women" />
+          <input
+            type="checkbox"
+            onChange={toggleSubCategory}
+            name="Bottomwear"
+            id="Bottomwear"
+            value="Bottomwear"
+          />
           <label> Bottomwear</label>
           <br />
-          <input type="checkbox" name="kids" id="Wokids" />
+          <input
+            type="checkbox"
+            onChange={toggleSubCategory}
+            name="Winterwear"
+            id="Winterwear"
+            value="Winterwear"
+          />
           <label> Winterwear</label>
         </div>
-        <div></div>
       </div>
       <div className="r-side w-full">
         <div className="flex justify-between items-center pb-5 py-5">
@@ -121,19 +151,23 @@ const Collection = () => {
             </h1>
             <p className="w-8 sm:w-12 h-[1px] sm:h-[2px] bg-gray-500 "></p>
           </div>
+          {/* Sorting Dropdown */}
           <div className="border px-2 py-2">
-            <select name="" id="">
-              <option value="">Sort by: Relevant</option>
-              <option value="low">Low to high</option>
-              <option value="low">High to low</option>
+            <select
+              onChange={(e) => setSortType(e.target.value)}
+              value={sortType}
+            >
+              <option value="relevant">Sort by: Relevant</option>
+              <option value="low-high">Price: Low to High</option>
+              <option value="high-low">Price: High to Low</option>
             </select>
           </div>
         </div>
         <div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6">
-            {filterProducts.map((item, index) => (
+            {filterProducts.map((item, i) => (
               <ProductItems
-                key={index}
+                key={i}
                 id={item._id}
                 image={item.image}
                 name={item.name}
