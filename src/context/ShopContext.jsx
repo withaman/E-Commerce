@@ -2,43 +2,62 @@ import React, { createContext, useEffect, useState } from "react";
 import { products } from "../assets/assets.js";
 export const ShopContext = createContext();
 
-const ShopContextProvider = ({ children }) => {
+const ShopContextProvider = (props) => {
   const currency = "$";
   const deliveryFee = 10;
   const [cartItem, setCartItem] = useState({});
 
-  const addToCart = (itemId, size) => {
+  const addToCart = (itermId, size) => {
     if (!size) {
-      alert("Select product size");
+      toast.error("Select Product Size");
       return;
     }
     let cartData = structuredClone(cartItem);
-    if (cartData[itemId]) {
-      if (cartData[itemId][size]) {
-        cartData[itemId][size] += 1;
+    if (cartData[itermId]) {
+      if (cartData[itermId][size]) {
+        cartData[itermId][size] += 1;
       } else {
-        cartData[itemId][size] = 1;
+        cartData[itermId][size] = 1;
       }
     } else {
-      console.log("Before add To Cart", cartData);
-      cartData[itemId] = {};
-      cartData[itemId][size] = 1;
-      console.log("After add To Cart", cartData);
+      console.log("before add to cart : ", cartData);
+      cartData[itermId] = {};
+      cartData[itermId][size] = 1;
+      console.log("after add to cart : ", cartData);
     }
     setCartItem(cartData);
   };
+
+  const getCartCount = () => {
+    let totalCount = 0;
+    for (const items in cartItem) {
+      for (item in cartItem[items]) {
+        try {
+          if (cartItem[items][item > 0]) {
+            totalCount += cartItem[items][item];
+          }
+        } catch (error) {}
+      }
+    }
+    return totalCount;
+  };
+
   useEffect(() => {
     console.log(cartItem);
   }, [cartItem]);
+
   const value = {
     products,
     currency,
     deliveryFee,
     cartItem,
     addToCart,
+    getCartCount,
   };
 
-  return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
+  return (
+    <ShopContext.Provider value={value}>{props.children}</ShopContext.Provider>
+  );
 };
 
 export default ShopContextProvider;
