@@ -29,15 +29,13 @@ const Collection = () => {
     );
   };
 
-  // Handle search input change
+  // Handle search input changem 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
   //Apply Filter and Sorting
   useEffect(() => {
-    if (!products) return;
-
     let updatedProducts = [...products];
 
     //Apply Category Filter

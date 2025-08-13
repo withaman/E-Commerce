@@ -30,20 +30,40 @@ const ShopContextProvider = (props) => {
 
   const getCartCount = () => {
     let totalCount = 0;
+    console.log(cartItem)
     for (const items in cartItem) {
-      for (item in cartItem[items]) {
+      for (let item in cartItem[items]) {
         try {
-          if (cartItem[items][item > 0]) {
+          if (cartItem[items][item] > 0) {
             totalCount += cartItem[items][item];
           }
-        } catch (error) {}
+          console.log("Running total",totalCount);
+        } catch (error) {
+            console.log("Error Conunting item",error);
+        }
       }
     }
     return totalCount;
   };
+  // const getCartCount = () => {
+  //   let totalCount = 0;
+
+  //   for (const itemId in cartItem) {
+  //     const sizes = cartItem[itemId];
+  //     for (const size in sizes) {
+  //       const quantity = sizes[size];
+  //       if (quantity > 0) {
+  //         totalCount += quantity;
+  //       }
+  //     }
+  //   }
+
+  //   return totalCount;
+  // };
 
   useEffect(() => {
-    // console.log(cartItem);
+    console.log(cartItem);
+    getCartCount();
   }, [cartItem]);
 
   const value = {

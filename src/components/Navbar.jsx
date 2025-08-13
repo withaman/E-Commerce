@@ -1,9 +1,11 @@
 import { NavLink, Link } from "react-router-dom";
 import { assets } from "../assets/assets";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
+  const { getCartCount } = useContext(ShopContext);
   return (
     <div className="flex items-center py-5 justify-between font-medium">
       <img className="w-36" src={assets.logo} alt="" />
@@ -40,7 +42,7 @@ const Navbar = () => {
         <Link to="/cart" className="relative">
           <img src={assets.cart_icon} className="w-5" alt="" />
           <p className="absolute right-[-5px] bottom-[-5px] bg-black text-white rounded-full aspect-square w-4 text-center text-[8px] leading-4">
-            6
+            {getCartCount()}
           </p>
         </Link>
         <img
@@ -61,7 +63,11 @@ const Navbar = () => {
                 onClick={() => setVisible(false)}
                 className="flex items-center gap-4 p-3 cursor-pointer"
               >
-                <img className="rotate-180 h-5" src={assets.dropdown_icon} alt="" />
+                <img
+                  className="rotate-180 h-5"
+                  src={assets.dropdown_icon}
+                  alt=""
+                />
                 <p>Back</p>
               </div>
               <NavLink
@@ -98,6 +104,6 @@ const Navbar = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;
