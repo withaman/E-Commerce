@@ -7,62 +7,55 @@ const ShopContextProvider = (props) => {
   const deliveryFee = 10;
   const [cartItem, setCartItem] = useState({});
 
-  const addToCart = (itermId, size) => {
+  const addToCart = (itemId, size) => {
     if (!size) {
-      toast.error("Select Product Size");
+      alert("Select Product Size");
       return;
     }
+
     let cartData = structuredClone(cartItem);
-    if (cartData[itermId]) {
-      if (cartData[itermId][size]) {
-        cartData[itermId][size] += 1;
+
+    if (cartData[itemId]) {
+      if (cartData[itemId][size]) {
+        cartData[itemId][size] += 1;
       } else {
-        cartData[itermId][size] = 1;
+        cartData[itemId][size] = 1;
       }
     } else {
-      console.log("before add to cart : ", cartData);
-      cartData[itermId] = {};
-      cartData[itermId][size] = 1;
-      console.log("after add to cart : ", cartData);
+      cartData[itemId] = {};
+      cartData[itemId][size] = 1;
     }
+    setCartItem(cartData);
+  };
+
+  const updateQuantity = (itemId, size, quantity) => {
+    let cartData = structuredClone(cartItem);
+    cartData[itemId][size] = quantity;
+    // console.log(quantity);
     setCartItem(cartData);
   };
 
   const getCartCount = () => {
     let totalCount = 0;
-    console.log(cartItem)
+    // console.log(cartItem)
     for (const items in cartItem) {
       for (let item in cartItem[items]) {
         try {
           if (cartItem[items][item] > 0) {
             totalCount += cartItem[items][item];
+            // console.log("total ", totalCount);
           }
-          console.log("Running total",totalCount);
+          // console.log("Running total", totalCount);
         } catch (error) {
-            console.log("Error Conunting item",error);
+          console.log("Error Conunting item", error);
         }
       }
     }
     return totalCount;
   };
-  // const getCartCount = () => {
-  //   let totalCount = 0;
-
-  //   for (const itemId in cartItem) {
-  //     const sizes = cartItem[itemId];
-  //     for (const size in sizes) {
-  //       const quantity = sizes[size];
-  //       if (quantity > 0) {
-  //         totalCount += quantity;
-  //       }
-  //     }
-  //   }
-
-  //   return totalCount;
-  // };
 
   useEffect(() => {
-    console.log(cartItem);
+    // console.log(cartItem);
     getCartCount();
   }, [cartItem]);
 
@@ -73,6 +66,7 @@ const ShopContextProvider = (props) => {
     cartItem,
     addToCart,
     getCartCount,
+    updateQuantity,
   };
 
   return (

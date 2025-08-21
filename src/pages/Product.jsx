@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
+import RelatedProducts from "../components/RelatedProducts";
 
 const Product = () => {
   const { productId } = useParams();
@@ -16,8 +17,8 @@ const Product = () => {
       if (i._id === productId) {
         setProductData(i);
         setImage(i.image[0]);
+        return null;
       }
-      return null;
     });
   };
 
@@ -83,7 +84,6 @@ const Product = () => {
               ))}
             </div>
           </div>
-
           <button
             onClick={() => addToCart(productData._id, size)}
             className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700 uppercase"
@@ -126,12 +126,11 @@ const Product = () => {
           </p>
         </div>
       </div>
-      {/* 
-      Related Products
+
       <RelatedProducts
         category={productData.category}
         subCategory={productData.subCategory}
-      /> */}
+      />
     </div>
   ) : (
     <div className="text-center text-gray-500 py-20">No Product Found</div>
