@@ -2,9 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import { assets, products } from "../assets/assets";
+import CartTotal from "../components/CartTotal";
+import { useNavigate } from "react-router-dom";
 const Cart = () => {
   const { cartItem, currency, updateQuantity } = useContext(ShopContext);
   const [productData, setProductData] = useState([]);
+  const navigate = useNavigate()
   // console.log(cartItem);
 
   useEffect(() => {
@@ -26,16 +29,16 @@ const Cart = () => {
   }, [cartItem]);
   return (
     <div>
-      <div className="text-2xl mb-3">
+      <div className="text-2xl my-5">
         <Title t1={"Your"} t2={"Cart"} />
       </div>
-      <div>
+      <div className="flex flex-col gap-2">
         {productData.map((item, index) => {
           const proData = products.find((product) => product._id == item._id);
           return (
             <div
               key={index}
-              className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
+              className="py-2 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
             >
               <div className="flex items-center gap-6">
                 <img src={proData.image[0]} className="w-16 sm:w-20" />
@@ -60,10 +63,10 @@ const Cart = () => {
                     e.target.value == " " || e.target.value == 0
                       ? null
                       : updateQuantity(
-                          item._id,
-                          item.size,
-                          Number(e.target.value)
-                        )
+                        item._id,
+                        item.size,
+                        Number(e.target.value)
+                      )
                   }
                   type="number"
                   defaultValue={item.quantity}
@@ -75,15 +78,19 @@ const Cart = () => {
                 <img
                   src={assets.bin_icon}
                   className="w-4 mr-4 sm:w-5 cursor-pointer"
+                  onClick={() => updateQuantity(item._id, item.size, 0)}
                 />
               </div>
             </div>
           );
         })}
       </div>
-      <div className="flex justify-end">
-        <div className="text-2xl mt-3">
-          <Title t1={"CART"} t2={"Total"} />
+      <div className="flex justify-end my-10">
+        <div className="w-1/2">
+          <CartTotal />
+          <div>
+            <p className='bg-black text-white text-center py-2 px-3 text-lg mt-2 cursor-pointer hover:bg-gray-900' onClick={() => { navigate("/place-order") }}>Place Order</p>
+          </div>
         </div>
       </div>
     </div>
